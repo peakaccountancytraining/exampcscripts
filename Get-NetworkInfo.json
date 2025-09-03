@@ -1,0 +1,13 @@
+{
+	"Note": "Maps access point MAC addresses to their name",
+
+	"AccessPoints": {
+
+		"48:A9:8A:64:E9:B9": "Malt ROUTER001 2G",
+		"48:A9:8A:64:E9:B8": "Malt ROUTER001 5G",
+		
+		"0C:72:74:BC:AB:8F": "Peak Bollington 5G",
+		"0C:72:74:BC:AB:8E": "Peak Bollington 2G"
+	}
+
+}

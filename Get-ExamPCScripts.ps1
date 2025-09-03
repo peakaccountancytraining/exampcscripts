@@ -1,0 +1,40 @@
+# Get-ExamPCScripts.ps1: downloads Peak exam PC scripts from github.
+
+# Version history
+$Version = "1.00"
+# v1.00 03/09/25 New: Original version.
+
+# Variables.
+$DefaultGitRepository = "munrobasher/peakexampcscripts"
+
+# Load Sapphire helper code.
+Try {. $PSScriptRoot\Sapphire.ps1} Catch {Write-Warning "Unable to load Sapphire.ps1`n$_"; Exit}
+
+# ReportError: report error and exit.
+Function ReportError($Message) {
+	Write-Warning $Message
+	[Sapphire]::AnyKey()
+	Exit
+}
+
+# Use Git repository environment variable if specified.
+$Repository = $DefaultGitRepository
+If ($Env:PeakExamScriptsRepository) {$Repository = $Env:PeakExamScriptsRepository}
+
+# Download the file.
+$TempFolder = [Sapphire]::GetTempFolder("Get-ExamPCScripts-")
+$DownloadFile = "$TempFolder\Download.gzip"
+$Uri = "https://github.com/$Repository/archive/refs/heads/main.tar.gz"
+Try {$Response = Invoke-WebRequest -Uri $Uri -OutFile $DownloadFile -ErrorAction Stop} Catch {ReportError $_}
+
+# Unarchive download.
+Push-Location $TempFolder
+$Cmd = "tar -xf ""$DownloadFile"""
+Invoke-Expression $Cmd
+Pop-Location
+Explorer $TempFolder
+
+$Folders = Get-ChildItem $TempFolder -Directory
+If (!$Folders) {ReportError "Unable to find scripts in download"}
+If ($Folders.Count -gt 1) {ReportError "Too many folders in download"}
+Get-ChildItem $Folders[0] -Recurse
