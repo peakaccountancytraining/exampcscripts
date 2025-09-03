@@ -17,11 +17,15 @@ Function ReportError($Message) {
 	Exit
 }
 
+# ---- START HERE ----
+Write-Host "Get-ExamPCScripts v$Version`n"
+
 # Use Git repository environment variable if specified.
 $Repository = $DefaultGitRepository
 If ($Env:PeakExamScriptsRepository) {$Repository = $Env:PeakExamScriptsRepository}
 
 # Download the file.
+Write-Host "Downloading repository"
 $TempFolder = [Sapphire]::GetTempFolder("Get-ExamPCScripts-")
 $DownloadFile = "$TempFolder\Download.gzip"
 $Uri = "https://github.com/$Repository/archive/refs/heads/main.tar.gz"
@@ -38,7 +42,8 @@ $Folders = Get-ChildItem $TempFolder -Directory
 If (!$Folders) {ReportError "Unable to find scripts in download"}
 If ($Folders.Count -gt 1) {ReportError "Too many folders in download"}
 $SourcePath = $Folders[0].Fullname
-& $PsScriptRoot\Sync-Folder $SourcePath $TargetPath
+Write-Host "Synchronising to current folder:"
+& $PsScriptRoot\Sync-Folder $SourcePath $PSScriptRoot -CreateTarget -Indent 2
 
 # Finished.
 [Sapphire]::AnyKey()
