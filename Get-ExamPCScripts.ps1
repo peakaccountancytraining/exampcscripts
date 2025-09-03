@@ -45,5 +45,8 @@ $SourcePath = $Folders[0].Fullname
 Write-Host "Synchronising to current folder:"
 & $PsScriptRoot\Sync-Folder $SourcePath $PSScriptRoot -CreateTarget -Indent 2
 
+# Delete temporary Folder.
+Remove-Item $TempFolder -Recurse
+
 # Finished.
 [Sapphire]::AnyKey()
