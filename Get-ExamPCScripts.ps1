@@ -5,7 +5,7 @@ $Version = "1.00"
 # v1.00 03/09/25 New: Original version.
 
 # Variables.
-$DefaultGitRepository = "munrobasher/peakexampcscripts"
+$DefaultGitRepository = "peakaccountancytraining/exampcscripts"
 
 # Load Sapphire helper code.
 Try {. $PSScriptRoot\Sapphire.ps1} Catch {Write-Warning "Unable to load Sapphire.ps1`n$_"; Exit}
@@ -32,9 +32,12 @@ Push-Location $TempFolder
 $Cmd = "tar -xf ""$DownloadFile"""
 Invoke-Expression $Cmd
 Pop-Location
-Explorer $TempFolder
 
+# Find the folder containing the files.
 $Folders = Get-ChildItem $TempFolder -Directory
 If (!$Folders) {ReportError "Unable to find scripts in download"}
 If ($Folders.Count -gt 1) {ReportError "Too many folders in download"}
-Get-ChildItem $Folders[0] -Recurse
+$SourcePath = $Folders[0].Fullname
+Write-Host "Source: $SourcePath"
+Write-Host "Target: $PSScriptRoot"
+

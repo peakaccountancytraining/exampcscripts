@@ -46,6 +46,7 @@
 #				 Mod: ScrapeArray can handle multiple matches for the pattern in which case the value for that key is an array
 # v1.65 03/09/25 Mod: GetEnvironment throws exception, not return message
 #				 New: GetTempFolder added
+#				 New: ReplaceEnvVar added
 
 # Script variables.
 $Progress = @{}											# hash table of per level progress classes
@@ -1051,6 +1052,23 @@ Class Sapphire {
 		Return $TempFolder
 	}
 	Static [String] GetTempFolder() {Return [Sapphire]::GetTempFolder("")}
+	
+	# ReplaceEnvVar: replace environment variables.
+	Static [String] ReplaceEnvVar($Text) {
+		$Pattern = "%([^%]+)%"
+		$Missing = ""
+		ForEach ($Match In ([RegEx]$Pattern).Matches($Text)) {
+			$EnvName = $Match.Groups[1].Value
+			$EnvVariable = Get-Item -Path "Env:$EnvName" -EA SilentlyContinue
+			If ($EnvVariable) {
+				$Text = $Text.Replace("%" + $EnvName + "%", $EnvVariable.Value)
+			} Else {
+				$Missing += [Sapphire]::IIf($Missing -eq "", "", ",") + $EnvName
+			}
+		}
+		If ($Missing) {Throw "Missing environment variables: $Missing"}
+		Return $Text
+	}
 
 }
 
