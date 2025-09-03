@@ -41,3 +41,5 @@ $SourcePath = $Folders[0].Fullname
 Write-Host "Source: $SourcePath"
 Write-Host "Target: $PSScriptRoot"
 
+# Finished.
+[Sapphire]::AnyKey()
