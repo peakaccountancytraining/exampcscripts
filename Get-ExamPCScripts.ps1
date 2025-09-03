@@ -38,8 +38,7 @@ $Folders = Get-ChildItem $TempFolder -Directory
 If (!$Folders) {ReportError "Unable to find scripts in download"}
 If ($Folders.Count -gt 1) {ReportError "Too many folders in download"}
 $SourcePath = $Folders[0].Fullname
-Write-Host "Source: $SourcePath"
-Write-Host "Target: $PSScriptRoot"
+& $PsScriptRoot\Sync-Folder $SourcePath $TargetPath
 
 # Finished.
 [Sapphire]::AnyKey()
